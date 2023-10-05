@@ -16,7 +16,15 @@ use App\Http\Controllers\Admin\HomeController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
+    if (auth()->check()) {
+        // El usuario está autenticado
+        return redirect()->route("admin.index");
+
+    } else {
+        return view('auth.login');
+        // El usuario no está autenticado
+    }
 });
 
 
