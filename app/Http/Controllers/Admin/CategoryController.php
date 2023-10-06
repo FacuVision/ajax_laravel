@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -13,9 +14,24 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view("admin.categories.index");
+
+        /*
+         return Datatables::of() es una parte importante de cómo se utiliza el paquete DataTables en Laravel. Esta expresión se utiliza para configurar y devolver una respuesta JSON que contiene los datos que se mostrarán en una tabla DataTables en el lado del cliente.
+
+         */
+
+        $categories = Category::all();
+
+
+        //if ($request->ajax) {
+        return DataTables::of($categories)->make(true);
+        // return DataTables::of($categories)->toJson();
+
+
+        //}
+
     }
 
     /**
@@ -25,7 +41,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.categories.index");
     }
 
     /**

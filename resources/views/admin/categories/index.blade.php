@@ -4,6 +4,10 @@
 
 @section('content_header')
     <h1>Menu de Categorias</h1>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 @stop
@@ -23,6 +27,22 @@
             </div>
 
             <div class="card-body">
+
+                <table class="table" id="category_table">
+                    <thead>
+                        <tr>
+                            <th scope="col">id</th>
+                            <th scope="col">name</th>
+                            <th scope="col">description</th>
+                            <th scope="col">created_at</th>
+                            <th scope="col">updated_at</th>
+                            {{-- <th scope="col">Accion</th> --}}
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
 
             </div>
 
@@ -74,8 +94,16 @@
 @stop
 
 @section('js')
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
+
     <script>
         $(document).ready(function() {
+
+            $(".modal-title").html("Crear una Categoria")
 
             $.ajaxSetup({
                 headers: {
@@ -83,30 +111,59 @@
                 }
             });
 
-            $(".modal-title").html("Crear una Categoria")
+            $('#category_table').DataTable({
+
+                processing: true,
+                serverSide: true,
 
 
+                ajax: '{!! route('admin.categories.index') !!}',
 
-                $('#form_ajax').on('submit', function(e) {
-                    e.preventDefault();
-                    let formData = $(this).serialize();
 
-                    $.ajax({
-                        type: 'POST',
-                        url: '{{ route('admin.categories.store') }}', // Reemplaza 'nombre_de_ruta' con la ruta de destino en tu aplicación
-                        data: formData,
-                        success: function(response) {
-                            // Manejar la respuesta del servidor (opcional)
-                            console.log(response);
-                        },
-                        error: function(xhr) {
-                            // Manejar errores (opcional)
-                            console.error(xhr.responseText);
-                        }
-                    });
+                columns: [{
+                        data: 'id',
+                        mame: 'id'
+                    },
+                    {
+                        data: 'name',
+                        mame: 'name'
+                    },
+                    {
+                        data: 'description',
+                        mame: 'description'
+                    },
+                    {
+                        data: 'created_at',
+                        mame: 'created_at'
+                    },
+                    {
+                        data: 'updated_at',
+                        mame: 'updated_at'
+                    }
+                ]
 
-                    $('#exampleModalCenter').modal('hide');
+            });
+
+            $('#form_ajax').on('submit', function(e) {
+                e.preventDefault();
+                let formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('admin.categories.store') }}', // Reemplaza 'nombre_de_ruta' con la ruta de destino en tu aplicación
+                    data: formData,
+                    success: function(response) {
+                        // Manejar la respuesta del servidor (opcional)
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        // Manejar errores (opcional)
+                        console.error(xhr.responseText);
+                    }
                 });
+
+                $('#exampleModalCenter').modal('hide');
+            });
 
 
         });
