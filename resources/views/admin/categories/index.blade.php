@@ -20,7 +20,7 @@
         <div class="card">
             <div class="card-header">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_creacion">
                     Launch demo modal
                 </button>
 
@@ -34,9 +34,8 @@
                             <th scope="col">id</th>
                             <th scope="col">name</th>
                             <th scope="col">description</th>
-                            <th scope="col">created_at</th>
-                            <th scope="col">updated_at</th>
-                            {{-- <th scope="col">Accion</th> --}}
+                            <th scope="col">fecha formateada</th>
+                            <th scope="col">fecha actualizacion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,7 +56,7 @@
     <!-- Modal -->
     {!! Form::open(['class' => 'form-horizontal', 'id' => 'form_ajax']) !!}
 
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    <div class="modal fade" id="modal_creacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -103,15 +102,16 @@
     <script>
         $(document).ready(function() {
 
-            $(".modal-title").html("Crear una Categoria")
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-            $('#category_table').DataTable({
+
+            $(".modal-title").html("Crear una Categoria")
+
+            var table = $('#category_table').DataTable({
 
                 processing: true,
                 serverSide: true,
@@ -133,13 +133,14 @@
                         mame: 'description'
                     },
                     {
-                        data: 'created_at',
-                        mame: 'created_at'
-                    },
+                        data: 'fecha_creacion',
+                        name: 'fecha_creacion'
+                    }, // Agrega esta columna formateada
                     {
-                        data: 'updated_at',
-                        mame: 'updated_at'
-                    }
+                        data: 'fecha_actualizacion',
+                        name: 'fecha_actualizacion'
+                    } // Agrega esta columna formateada
+
                 ]
 
             });
@@ -162,9 +163,19 @@
                     }
                 });
 
-                $('#exampleModalCenter').modal('hide');
+                //$('#modal_creacion').modal('hide');
+                table.ajax.reload();
+                hideModal();
+
             });
 
+            function hideModal() {
+                $(".modal-backdrop").remove();
+                $("#modal_creacion").hide();
+                // $("#modal_creacion").removeClass("in");
+                //$('body').removeClass('modal-open');
+                //$('body').css('padding-right', '');
+            }
 
         });
     </script>

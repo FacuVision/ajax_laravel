@@ -27,6 +27,10 @@ Route::get('/', function () {
     }
 });
 
+Route::get('/home', function () {
+    return redirect()->route("admin.index");
+} );
+
 
 Route::middleware([
     'auth:sanctum',

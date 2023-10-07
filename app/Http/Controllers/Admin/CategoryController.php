@@ -24,13 +24,17 @@ class CategoryController extends Controller
 
         $categories = Category::all();
 
+        return DataTables::of($categories)
+        ->addColumn('fecha_creacion', function ($category) {
+            // Formatea la fecha como desees utilizando Carbon
+            return $category->created_at->format('d/m/Y');
+        })->addColumn('fecha_actualizacion', function ($category) {
+            // Formatea la fecha como desees utilizando Carbon
+            return $category->updated_at->format('d/m/Y');
+        })->make(true);
 
-        //if ($request->ajax) {
-        return DataTables::of($categories)->make(true);
+
         // return DataTables::of($categories)->toJson();
-
-
-        //}
 
     }
 
