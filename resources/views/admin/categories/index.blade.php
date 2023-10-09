@@ -48,29 +48,6 @@
 
 
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong></strong>
-                </div>
-
-                <script>
-                    $(".alert").alert();
-                </script>
-            </div>
-            <div class="card-body">
-                <nav class="navbar navbar-expand navbar-light bg-light">
-                    <div class="nav navbar-nav">
-                        <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" href="#">Home</a>
-                    </div>
-                </nav>
-            </div>
-        </div>
     </div>
 
 
@@ -331,6 +308,8 @@
 
                 let id = $("#category_id").val();
 
+                //console.log(formData);
+
                 $.ajax({
                     type: 'PUT',
                     url: '{{ url('admin/categories', '') }}/' + id,
@@ -358,6 +337,42 @@
                 $('body').removeClass('modal-open');
                 $('body').css('padding-right', '');
             }
+
+
+
+            //PASOS PARA LA ELIMINACION DE UN REGISTRO AJAX--------------------------
+
+            $("body").on("click", ".delButton", function() {
+                if (confirm('¿Seguro que quieres eliminar este registro?')) {
+                    // Si el usuario hace clic en "Aceptar", ejecutamos la lógica de eliminación aquí
+                    // Puedes realizar una solicitud AJAX para eliminar el registro o cualquier otra acción que necesites
+
+                    //e.preventDefault();
+
+                    var id = $(this).data('id');
+                    //console.log(id);
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '{{ url('admin/categories', '') }}/' + id,
+                        success: function(response) {
+                            // Manejar la respuesta del servidor (opcional)
+
+                        },
+                        error: function(xhr) {
+                            // Manejar errores (opcional)
+                            console.error(xhr.responseText);
+                        }
+
+                    });
+
+                    table.ajax.reload(); //recargar la tabla
+                }
+
+                // Si el usuario hace clic en "Cancelar", no hacemos nada
+                // Aquí puedes agregar cualquier otra acción que desees realizar si el usuario cancela
+
+            });
+
 
 
         });
