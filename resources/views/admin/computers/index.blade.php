@@ -4,6 +4,8 @@
 
 @section('content_header')
     <h1>Menu de computadoras</h1>
+    {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
+
 @stop
 
 @section('content')
@@ -13,6 +15,7 @@
     {{-- ESTILO DE DATATABLE VANILA COMPACTO --}}
     @include('admin.styles.responsive_table')
 
+    @include('admin.computers.styles.select_multiple_bootstrap')
 
     <p>
         Aqui puedes crear, editar y eliminar las computadoras
@@ -22,13 +25,11 @@
         <div class="card">
             <div class="card-header">
 
-                <!-- Button trigger modal -->
-                {{-- <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#create_computer">
-                    Launch
-                </button> --}}
 
-                <button class="btn btn-primary" data-toggle="modal" data-target="#create_computer">Abrir Modal Externo</button>
 
+                <!-- Botón para crear una computadora-->
+                <button class="btn btn-primary" data-toggle="modal" data-target="#modalExterno">Registrar
+                    computadora</button>
 
             </div>
             <div class="card-body">
@@ -54,133 +55,32 @@
         </div>
     </div>
 
-    <div class="container mt-5">
-        <!-- Modal Externo -->
-        <div class="modal fade" id="modalExterno" tabindex="-1" role="dialog" aria-labelledby="modalExternoLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalExternoLabel">Modal Externo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Formulario POST en el Modal Externo -->
-                        <form action="procesar_externo.php" method="post">
-                            <div class="container-fluid">
-                                <div class="form-group">
-                                    <label for="procesador">Procesador</label>
-                                    <input type="text" class="form-control" id="procesador" placeholder="Procesador">
-                                </div>
-                                <div class="form-group">
-                                    <label for="placa">Placa</label>
-                                    <input type="text" class="form-control" id="placa" placeholder="Placa">
-                                </div>
-                                <div class="form-group">
-                                    <label for="case">Case</label>
-                                    <input type="text" class="form-control" id="case" placeholder="Case">
-                                </div>
-                                <div class="form-group">
-                                    <label for="grafica">Tarjeta Gráfica</label>
-                                    <input type="text" class="form-control" id="grafica" placeholder="Tarjeta Gráfica">
-                                </div>
-                                <div class="form-group">
-                                    <label for="ram">RAM</label>
-                                    <input type="text" class="form-control" id="ram" placeholder="RAM">
-                                </div>
-                                <div class="form-group">
-                                    <label for="descripcion">Descripción</label>
-                                    <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción"></textarea>
-                                </div>
-                                <div class="form-group">
-
-                                    <label for="opciones">Opciones</label>
-                                    <select class="form-control" id="opciones">
-                                        <option value="opcion1">Opción 1</option>
-                                        <option value="opcion2">Opción 2</option>
-                                        <option value="opcion3">Opción 3</option>
-                                    </select>
-
-
-
-                                </div>
-
-                            </div>
-                        </form>
-
-                        <div class="form-group">
-                            <label for="opciones">Agregar monitor nuevo</label>
-                            <button class="btn btn-secondary mt-3" data-toggle="modal" data-target="#modalInterno">Abrir
-                                Modal Interno
-                            </button>
-
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Interno -->
-        <div class="modal fade" id="modalInterno" tabindex="-1" role="dialog" aria-labelledby="modalInternoLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalInternoLabel">Modal Interno</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Formulario POST en el Modal Interno -->
-                        <form action="procesar_interno.php" method="post">
-                            <div class="form-group">
-                                <label for="campoInterno">Campo Interno</label>
-                                <input type="text" class="form-control" id="campoInterno" name="campoInterno"
-                                    placeholder="Campo Interno">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Enviar</button>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Botón para abrir el Modal Externo -->
-        <button class="btn btn-primary" data-toggle="modal" data-target="#modalExterno">Abrir Modal Externo</button>
-    </div>
-
-
-
 
 
     {{-- ZONA DE MODALES --}}
-    {{-- @include('admin.computers.modals.create_computer') --}}
+    @include('admin.computers.modals.create_computer')
+
 
 
 @stop
 
 
-
-
-
-
 @section('js')
 
     {{-- JS DE DATATABLE CDN --}}
-
     @include('admin.partials.js_datatables')
+
 
     <script>
         $(document).ready(function() {
+
+
+            // $.ajaxSetup({
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     }
+            // });
+
             var data_table = $('#tabla').DataTable({
 
                 responsive: true,
@@ -199,7 +99,6 @@
                         'previous': 'Anterior'
                     }
                 },
-
 
                 processing: true,
                 serverSide: true,
@@ -221,19 +120,19 @@
                     {
                         data: 'case',
                         name: 'case'
-                    }, // Agrega esta columna formateada
+                    },
                     {
                         data: 'grafica',
                         name: 'grafica'
-                    }, // Agrega esta columna formateada
+                    },
                     {
                         data: 'ram',
                         name: 'ram'
-                    }, // Agrega esta columna formateada
+                    },
                     {
                         data: 'descripcion',
                         name: 'descripcion'
-                    }, // Agrega esta columna formateada
+                    },
                     {
                         data: 'acciones',
                         name: 'acciones',
@@ -246,8 +145,55 @@
                     [0, 'desc']
                 ]
 
-
             });
+
+            var multipleCancelButton = new Choices('#select_monitors', {
+                removeItemButton: true,
+                //maxItemCount: 1,
+                searchResultLimit: 15,
+                renderChoiceLimit: 15
+            });
+
+
+            // ZONA DE ACCIONES CRUD
+
+            $('#create_computer_button_submit_modal').click(function(e) {
+                $('#form_create_computer').submit();
+            });
+
+
+            $('#form_create_computer').on('submit', function(e) {
+                e.preventDefault();
+                let formData = $(this).serialize();
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('admin.computers.store') }}', // Reemplaza 'nombre_de_ruta' con la ruta de destino en tu aplicación
+                    data: formData,
+                    success: function(response) {
+                        // Manejar la respuesta del servidor (opcional)
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        // Manejar errores (opcional)
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                //data_table.ajax.reload(); //recargar la tabla
+                //hideModal(); //ocultar modal de creacion
+            });
+
+            function hideModal() {
+                // $("input").val("");
+                // $("textarea").html("");
+
+                var close_create_modal_computer = $('#close_create_modal_computer');
+                close_create_modal_computer.trigger('click');
+
+
+            }
 
 
 

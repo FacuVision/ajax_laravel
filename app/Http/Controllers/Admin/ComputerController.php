@@ -48,7 +48,40 @@ class ComputerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //OBTENERMOS DE UN ARRAY  "select_monitors[]"
+         $selectMonitors = $request->input('select_monitors');
+
+         return $selectMonitors;
+
+        //  $computer = Computer::create([
+
+        //     "procesador" => $request->input('procesador'),
+        //     "placa" => $request->input('placa'),
+        //     "case" => $request->input('case'),
+        //     "grafica" => $request->input('grafica'),
+        //     "ram" => $request->input('ram'),
+        //     "descripcion" => $request->input('descripcion')
+
+        //  ]);
+
+
+
+        // foreach ($selectMonitors as $key => $value) {
+        //     echo $key ."-". $value;
+        // }
+
+        // die();
+
+       // return $request->all();
+
+        //return $request->select_monitors;
+
+        // foreach ($selectMonitors as $key => $value) {
+        //     echo $key ."-". $value;
+        // }
+
+
+
     }
 
     /**

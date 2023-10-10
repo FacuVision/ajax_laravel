@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" id="close_create" data-dismiss="modal">Cerrar</button>
                     {!! Form::submit('Crear', ['id' => 'ajax_boton', 'class' => 'btn btn-success']) !!}
                 </div>
             </div>
@@ -121,7 +121,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" id="close_edit" data-dismiss="modal">Cerrar</button>
                     {!! Form::submit('Editar', ['id' => 'ajax_boton_edit', 'class' => 'btn btn-success']) !!}
                 </div>
             </div>
@@ -240,11 +240,17 @@
             function hideModal() {
                 $("#name").val("");
                 $("#description").val("");
-                $("#modal_categories").hide();
-                $("#modal_categories").removeClass("in");
-                $('body').removeClass('modal-open');
-                $('body').css('padding-right', '');
-                $(".modal-backdrop").remove();
+
+                    // Selecciona el botón por su id
+                    var close_create = $('#close_create');
+                    // Programáticamente dispara un evento de clic en el botón
+                    close_create.trigger('click');
+
+                // $("#modal_categories").hide();
+                // $("#modal_categories").removeClass("in");
+                // $('body').removeClass('modal-open');
+                // $('body').css('padding-right', '');
+                // $(".modal-backdrop").remove();
             }
 
 
@@ -331,11 +337,19 @@
             function hideModalEdit() {
                 $("#name").val("");
                 $("#description").val("");
-                $(".modal-backdrop").remove();
-                $("#modal_categories_edit").hide();
-                $("#modal_categories").removeClass("in");
-                $('body').removeClass('modal-open');
-                $('body').css('padding-right', '');
+
+
+                    // Selecciona el botón por su id
+                    var close_edit = $('#close_edit');
+                    // Programáticamente dispara un evento de clic en el botón
+                    close_edit.trigger('click');
+
+                // $(".modal-backdrop").remove();
+                // $("#modal_categories_edit").hide();
+                // $("#modal_categories").removeClass("in");
+                // $('body').removeClass('modal-open');
+                // $('body').css('padding-right', '');
+
             }
 
 
@@ -347,7 +361,7 @@
                     // Si el usuario hace clic en "Aceptar", ejecutamos la lógica de eliminación aquí
                     // Puedes realizar una solicitud AJAX para eliminar el registro o cualquier otra acción que necesites
 
-                    //e.preventDefault();
+                    //e.preventDefault(); //NO ES NECESARIO ACTIVAR EL PREVENT DEFAULT CUANDO SE HACE UNA ELIMINACION
 
                     var id = $(this).data('id');
                     //console.log(id);
