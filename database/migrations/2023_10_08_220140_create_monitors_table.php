@@ -19,14 +19,14 @@ class CreateMonitorsTable extends Migration
             $table->string("marca");
             $table->string("modelo");
             $table->text("descripcion");
-            $table->unsignedBigInteger("computer_id");
+            $table->unsignedBigInteger("computer_id")->nullable();
             $table->timestamps();
 
             $table->foreign('computer_id')
             ->references('id')
             ->on('computers')
-            ->onDelete('cascade')
-            ->onUpdate('cascade');
+            ->onDelete('set null')
+            ->onUpdate('set null');
 
 
 

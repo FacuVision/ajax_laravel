@@ -1,6 +1,6 @@
 <!-- ESTILOS PARA QUE FUNCIONE EL SELEC MULTIPLE -->
 
-<style>
+<!-- <style>
         .mt-100 {
             margin-top: 100px
         }
@@ -12,14 +12,14 @@
             color: #514B64;
             min-height: 100vh
         }
-</style>
+</style> -->
 
 <!-- CDN DE JS Y CSS PARA EL SELECT MULTIPLE ESTILO GOB.PE -->
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 
 <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
-
+ -->
 
 
 <!-- CODIGO JAVASCRIP QUE SIRVE PARA INICIALIZAR EL SELECT MULTIPLE -->
@@ -30,5 +30,4 @@ var multipleCancelButton = new Choices('#select-monitors', {
                 searchResultLimit: 15,
                 renderChoiceLimit: 15
 }); -->
-
 

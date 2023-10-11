@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Computer;
+use App\Models\Monitor;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -17,7 +18,19 @@ class ComputerController extends Controller
      */
     public function index()
     {
+
         return view("admin.computers.index");
+    }
+
+
+    public function load_monitors()
+    {
+
+        $free_monitors = Monitor::select()->where("computer_id", null)->get();
+
+        return response()->json(['free_monitors' => $free_monitors]);
+
+
     }
 
     /**
@@ -79,9 +92,6 @@ class ComputerController extends Controller
         // foreach ($selectMonitors as $key => $value) {
         //     echo $key ."-". $value;
         // }
-
-
-
     }
 
     /**

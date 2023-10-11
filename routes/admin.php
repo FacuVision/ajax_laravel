@@ -12,3 +12,5 @@ Route::get('', [HomeController::class,"index"])->name("admin.index");
 Route::resource('categories', CategoryController::class)->names("admin.categories");
 Route::resource('monitors', MonitorController::class)->names("admin.monitors");
 Route::resource('computers', ComputerController::class)->names("admin.computers");
+
+Route::get("load_monitors", [ComputerController::class , "load_monitors"])->name("admin.computers.load_monitors");
