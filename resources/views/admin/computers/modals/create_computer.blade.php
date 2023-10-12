@@ -5,7 +5,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalExternoLabel">Modal Externo</h5>
+                    <h5 class="modal-title" id="modalExternoLabel">Registrar una computadora</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <!-- Formulario POST en el Modal Externo -->
                     {{-- <form id="form_create_computer"> --}}
-                    {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_computer']) !!}
+                        {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_computer']) !!}
 
 
                     <div class="container-fluid">
@@ -42,40 +42,17 @@
                         </div>
                         <div class="form-group">
                             <label for="descripcion">Descripción</label>
-                            <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción" name="descripcion"></textarea>
+                            <textarea class="form-control" id="descripcion_computer" rows="3" placeholder="Descripción" name="descripcion_computer"></textarea>
                         </div>
                         <div class="form-group">
 
                             <label for="opciones">Opciones</label>
 
-                            <div class="col-md-12">
-                                {{-- <select id="select_monitors" name="select_monitors[]"
-                                    placeholder="Selecciona uno o mas monitores para la PC" multiple>
-                                </select> --}}
 
-                                <select class="form-select" id="select_monitors" data-placeholder="Selecciona uno o mas monitores para la PC" multiple>
-                                    <option>Christmas Island</option>
-                                    <option>South Sudan</option>
-                                    <option>Jamaica</option>
-                                    <option>Kenya</option>
-                                    <option>French Guiana</option>
-                                    <option>Mayotta</option>
-                                    <option>Liechtenstein</option>
-                                    <option>Denmark</option>
-                                    <option>Eritrea</option>
-                                    <option>Gibraltar</option>
-                                    <option>Saint Helena, Ascension and Tristan da Cunha</option>
-                                    <option>Haiti</option>
-                                    <option>Namibia</option>
-                                    <option>South Georgia and the South Sandwich Islands</option>
-                                    <option>Vietnam</option>
-                                    <option>Yemen</option>
-                                    <option>Philippines</option>
-                                    <option>Benin</option>
-                                    <option>Czech Republic</option>
-                                    <option>Russia</option>
-                                </select>
-                            </div>
+                            <select name="select_monitors[]" class="form-select" id="select_monitors"
+                                data-placeholder="Selecciona uno o mas monitores para la PC" multiple>
+
+                            </select>
 
                         </div>
 
@@ -88,7 +65,7 @@
                         <div class="form-group">
                             <label for="opciones">Agregar monitor nuevo</label> &nbsp;
                             <button class="btn btn-success mt-3" data-toggle="modal"
-                                data-target="#modalInterno">+</button>
+                                data-target="#modalInterno" id="modal_monitors_button">+</button>
                         </div>
                     </div>
 
@@ -116,28 +93,54 @@
     <div class="modal fade" id="modalInterno" tabindex="-1" role="dialog" aria-labelledby="modalInternoLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
+            {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_monitor']) !!}
+
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalInternoLabel">Modal Interno</h5>
+                    <h5 class="modal-title" id="modalInternoLabel">Registrar un nuevo monitor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <!-- Formulario POST en el Modal Interno -->
-                    <form action="procesar_interno.php" method="post">
-                        <div class="form-group">
-                            <label for="campoInterno">Campo Interno</label>
-                            <input type="text" class="form-control" id="campoInterno" name="campoInterno"
-                                placeholder="Campo Interno">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                    </form>
+
+
+
+
+
+
+                    <!-- Campo cod_patrimonial -->
+                    <div class="form-group">
+                        <label for="cod_patrimonial">Código Patrimonial (*)</label>
+                        <input type="text" class="form-control" id="cod_patrimonial" name="cod_patrimonial" placeholder="Ingrese código patrimonial"  required>
+                    </div>
+
+                    <!-- Campo marca -->
+                    <div class="form-group">
+                        <label for="marca">Marca (*)</label>
+                        <input type="text" class="form-control" id="marca" name="marca" placeholder="Ingrese Marca"  required>
+                    </div>
+
+                    <!-- Campo modelo -->
+                    <div class="form-group">
+                        <label for="modelo">Modelo (*)</label>
+                        <input type="text" class="form-control" id="modelo" name="modelo" placeholder="Ingrese modelo"  required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción (*)</label>
+                        <textarea class="form-control" id="descripcion" rows="3" placeholder="Ingrese Descripción" name="descripcion" required></textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_close_create_monitors">Cerrar</button>
+
                 </div>
             </div>
+            {!! Form::close() !!}
         </div>
     </div>
 </div>

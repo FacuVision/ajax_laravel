@@ -33,6 +33,26 @@ class ComputerController extends Controller
 
     }
 
+    public function create_monitors(Request $request)
+    {
+
+        if ($request) {
+            Monitor::create([
+                "marca" => $request->marca,
+                "modelo" => $request->modelo,
+                "cod_patrimonial" => $request->cod_patrimonial,
+                "descripcion" => $request->descripcion
+
+            ]);
+        }
+
+        $free_monitors = Monitor::select()->where("computer_id", null)->get();
+
+        return response()->json(['free_monitors' => $free_monitors]);
+
+
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -28,7 +28,7 @@
     border: 0px solid #ccc;
 
 }
-
+/*
 @media screen and (max-width: 1000px) {
     table {
         border: 0px;
@@ -61,7 +61,7 @@
         font-weight: bold;
         float: left;
     }
-}
+} */
 
 /*
 @media screen and (max-width: 600px) {

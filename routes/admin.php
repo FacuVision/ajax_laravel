@@ -14,3 +14,4 @@ Route::resource('monitors', MonitorController::class)->names("admin.monitors");
 Route::resource('computers', ComputerController::class)->names("admin.computers");
 
 Route::get("load_monitors", [ComputerController::class , "load_monitors"])->name("admin.computers.load_monitors");
+Route::post("create_monitors", [ComputerController::class , "create_monitors"])->name("admin.computers.create_monitors");

@@ -10,20 +10,13 @@
 
 @section('content')
 
+
     {{-- ESTILO DE DATATABLE CDN --}}
     @include('admin.partials.css_datatables')
     {{-- ESTILO DE DATATABLE VANILA COMPACTO --}}
     @include('admin.styles.responsive_table')
 
-    @include('admin.computers.styles.select_multiple_bootstrap')
-
-
-<!-- Styles -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-<!-- Or for RTL support -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+    @include('admin.computers.styles.css_select_multiple_bootstrap')
 
 
 
@@ -65,12 +58,8 @@
         </div>
     </div>
 
-
-
     {{-- ZONA DE MODALES --}}
     @include('admin.computers.modals.create_computer')
-
-
 
 @stop
 
@@ -80,14 +69,12 @@
     {{-- JS DE DATATABLE CDN --}}
     @include('admin.partials.js_datatables')
 
-
-    <!-- Scripts -->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @include('admin.computers.styles.js_select_multiple_bootstrap')
 
     <script>
         $(document).ready(function() {
+
+            //CARGAR MONITORES EN EL SELECT MULTIPLE
 
             $('#select_monitors').select2({
                 theme: "bootstrap-5",
@@ -99,12 +86,14 @@
             });
 
 
+            //CARGAR MONITORES EN EL SELECT MULTIPLE CON AJAX Y METODO LOAD MONITORS
+
             $.ajax({
                 type: 'GET',
                 url: '{{ route('admin.computers.load_monitors') }}',
                 success: function(response) {
                     // Manejar la respuesta del servidor (opcional)
-                    console.log(response);
+                    //console.log(response);
 
                     var selectMonitors = $('#select_monitors');
                     selectMonitors.empty(); // Limpia cualquier opción previa
@@ -126,11 +115,68 @@
             });
 
 
+            //REGISTRAR UN NUEVO MONITOR DESDE EL MENU MODAL DE LAS COMPUTADORAS
+
+
+            $('#form_create_monitor').on('submit', function(e) {
+                e.preventDefault();
+                let formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('admin.computers.create_monitors') }}', // Reemplaza 'nombre_de_ruta' con la ruta de destino en tu aplicación
+                    data: formData,
+                    success: function(response) {
+                        // Manejar la respuesta del servidor (opcional)
+                        //console.log(response);
+
+                        // Cierra cualquier alerta previamente abierta
+                        //CERRAR ALERTAS
+                        //$('#alert_monitor_create_modal').alert(); // Abre la alerta
+
+                        var selectMonitors = $('#select_monitors');
+                        selectMonitors.empty(); // Limpia cualquier opción previa
+                        response.free_monitors.forEach(function(monitor) {
+                            selectMonitors.append($('<option>', {
+                                value: monitor.id,
+                                text: monitor.cod_patrimonial + " " +
+                                    monitor.marca + " " +
+                                    monitor.modelo
+                            }));
+                        });
+                    },
+                    error: function(xhr) {
+                        // Manejar errores (opcional)
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                //data_table.ajax.reload(); //recargar la tabla
+                hideModalMonitors(); //ocultar modal de creacion
+            });
+
+
+            function hideModalMonitors() {
+
+                $("#marca").val("");
+                $("#modelo").val("");
+                $("#cod_patrimonial").val("");
+                $("#descripcion").val("");
+
+                var modal_close_create_monitors = $('#modal_close_create_monitors');
+                modal_close_create_monitors.trigger('click');
+
+            }
+
+
             // $.ajaxSetup({
             //     headers: {
             //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             //     }
             // });
+
+
+            //CARGAR DATATABLE
 
             var data_table = $('#tabla').DataTable({
 
@@ -199,18 +245,17 @@
             });
 
 
-            // ZONA DE ACCIONES CRUD
 
+
+
+
+
+            // ZONA DE ACCIONES CRUD ----------------------------------
+
+            //AL PRESIONAR EL BOTON QUE ESTÁ FUERA DEL FORMULARIO, ESTE DISPARA EL SUBMIT DEL FORMULARIO
             $('#create_computer_button_submit_modal').click(function(e) {
                 $('#form_create_computer').submit();
             });
-
-            // $('#register_computer').click(function(e) {
-
-
-
-            // });
-
 
             $('#form_create_computer').on('submit', function(e) {
                 e.preventDefault();
@@ -242,8 +287,9 @@
                 var close_create_modal_computer = $('#close_create_modal_computer');
                 close_create_modal_computer.trigger('click');
 
-
             }
+
+
 
 
 
