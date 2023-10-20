@@ -226,6 +226,8 @@
                     success: function(response) {
                         // Manejar la respuesta del servidor (opcional)
                         console.log(response);
+                        table.ajax.reload(); //recargar la tabla
+
                     },
                     error: function(xhr) {
                         // Manejar errores (opcional)
@@ -233,7 +235,6 @@
                     }
                 });
 
-                table.ajax.reload(); //recargar la tabla
                 hideModal(); //ocultar modal de creacion
             });
 
@@ -323,6 +324,7 @@
                     success: function(response) {
                         // Manejar la respuesta del servidor (opcional)
                         console.log(response);
+                        table.ajax.reload(); //recargar la tabla
                     },
                     error: function(xhr) {
                         // Manejar errores (opcional)
@@ -330,7 +332,6 @@
                     }
                 });
 
-                table.ajax.reload(); //recargar la tabla
                 hideModalEdit(); //ocultar modal de edicion
             });
 
@@ -370,6 +371,7 @@
                         url: '{{ url('admin/categories', '') }}/' + id,
                         success: function(response) {
                             // Manejar la respuesta del servidor (opcional)
+                            table.ajax.reload(); //recargar la tabla
 
                         },
                         error: function(xhr) {
@@ -379,7 +381,6 @@
 
                     });
 
-                    table.ajax.reload(); //recargar la tabla
                 }
 
                 // Si el usuario hace clic en "Cancelar", no hacemos nada

@@ -36,7 +36,7 @@
 
             </div>
             <div class="card-body">
-                <table id="tabla" class="table-striped display compact table" style="width:100%">
+                <table id="tabla" class="table-striped display compact" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -80,8 +80,6 @@
             $("#register_computer").click(function() {
                 cargar_monitores_select_modal();
             })
-
-
 
             //ZONA DE ALERTS (OCULTANDO ALERTS)
             $("#alert_create_monitors").hide();
@@ -320,6 +318,7 @@
                         //que aun no poseen una computadora asociada
                         cargar_monitores_select_modal();
                         limpiarCamposDeCreacionComputadora(); //ocultar modal de creacion
+                        data_table.ajax.reload(); //recargar la tabla
 
                     },
                     error: function(xhr, status, error) {
@@ -337,7 +336,6 @@
                     }
                 });
 
-                data_table.ajax.reload(); //recargar la tabla
 
             });
 
