@@ -60,6 +60,7 @@
 
     {{-- ZONA DE MODALES --}}
     @include('admin.computers.modals.create_computer')
+    @include('admin.computers.modals.edit_computer')
 
 @stop
 
@@ -68,15 +69,35 @@
 
     {{-- JS DE DATATABLE CDN --}}
     @include('admin.partials.js_datatables')
-
     @include('admin.computers.styles.js_select_multiple_bootstrap')
 
     <script>
         $(document).ready(function() {
 
-            //CARGAR MONITORES EN EL SELECT MULTIPLE
+            //CARGAR LOS MONITORES AL INICIO Y AL PRESIONAR EL BOTON DE CREAR
+            cargar_monitores_select_modal();
 
+            $("#register_computer").click(function() {
+                cargar_monitores_select_modal();
+            })
+
+
+
+            //ZONA DE ALERTS (OCULTANDO ALERTS)
+            $("#alert_create_monitors").hide();
+
+
+            //CARGAR MONITORES EN EL SELECT MULTIPLE
             $('#select_monitors').select2({
+                theme: "bootstrap-5",
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                    'style',
+                placeholder: $(this).data('placeholder'),
+                closeOnSelect: false,
+                allowClear: true,
+            });
+
+            $('#select_edit_monitors').select2({
                 theme: "bootstrap-5",
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
                     'style',
@@ -87,32 +108,37 @@
 
 
             //CARGAR MONITORES EN EL SELECT MULTIPLE CON AJAX Y METODO LOAD MONITORS
+            function cargar_monitores_select_modal() {
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ route('admin.computers.load_monitors') }}',
+                    success: function(response) {
+                        // Manejar la respuesta del servidor (opcional)
+                        //console.log(response);
 
-            $.ajax({
-                type: 'GET',
-                url: '{{ route('admin.computers.load_monitors') }}',
-                success: function(response) {
-                    // Manejar la respuesta del servidor (opcional)
-                    //console.log(response);
+                        var selectMonitors = $('#select_monitors');
+                        selectMonitors.empty(); // Limpia cualquier opción previa
+                        response.free_monitors.forEach(function(monitor) {
+                            selectMonitors.append($('<option>', {
+                                value: monitor.id,
+                                text: monitor.cod_patrimonial + " " +
+                                    monitor.marca + " " +
+                                    monitor.modelo
+                            }));
+                        });
 
-                    var selectMonitors = $('#select_monitors');
-                    selectMonitors.empty(); // Limpia cualquier opción previa
-                    response.free_monitors.forEach(function(monitor) {
-                        selectMonitors.append($('<option>', {
-                            value: monitor.id,
-                            text: monitor.cod_patrimonial + " " +
-                                monitor.marca + " " +
-                                monitor.modelo
-                        }));
-                    });
-                },
+                    },
 
 
-                error: function(xhr) {
-                    // Manejar errores (opcional)
-                    console.error(xhr.responseText);
-                }
-            });
+                    error: function(xhr) {
+                        // Manejar errores (opcional)
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+
+
 
 
             //REGISTRAR UN NUEVO MONITOR DESDE EL MENU MODAL DE LAS COMPUTADORAS
@@ -130,41 +156,61 @@
                         // Manejar la respuesta del servidor (opcional)
                         //console.log(response);
 
-                        // Cierra cualquier alerta previamente abierta
-                        //CERRAR ALERTAS
-                        //$('#alert_monitor_create_modal').alert(); // Abre la alerta
-
                         var selectMonitors = $('#select_monitors');
                         selectMonitors.empty(); // Limpia cualquier opción previa
                         response.free_monitors.forEach(function(monitor) {
+
+                            //LLENAMOS EL ALERT CON EL VALOR
+                            $("#cod_patrimonial_alert").text(monitor.cod_patrimonial)
+
                             selectMonitors.append($('<option>', {
                                 value: monitor.id,
                                 text: monitor.cod_patrimonial + " " +
                                     monitor.marca + " " +
                                     monitor.modelo
                             }));
+
+                            //DURA 10 SEG Y SE OCULTA LA ALERTA
+                            $("#alert_create_monitors").fadeTo(10000, 500).slideUp(500,
+                                function() {
+                                    $("#alert_create_monitors").slideUp(500);
+                                });
+
                         });
+
+                        limpiarCamposDeCreacion(); //ocultar modal de creacion
+                        $("#alerta").hide(); //Ocultar el alert de errores en caso haya uno
+
                     },
-                    error: function(xhr) {
-                        // Manejar errores (opcional)
-                        console.error(xhr.responseText);
+                    error: function(xhr, status, error) {
+                        if (xhr.status === 422) {
+                            var errores = xhr.responseJSON.errors;
+                            var listaErrores = $("#lista-errores");
+                            listaErrores.empty(); // Limpiar errores anteriores
+
+                            $.each(errores, function(index, error) {
+                                listaErrores.append("<li>" + error + "</li>");
+                            });
+
+                            $("#alerta").show(); // Mostrar la alerta
+                        }
                     }
                 });
 
                 //data_table.ajax.reload(); //recargar la tabla
-                hideModalMonitors(); //ocultar modal de creacion
+
+
             });
 
-
-            function hideModalMonitors() {
+            function limpiarCamposDeCreacion() {
 
                 $("#marca").val("");
                 $("#modelo").val("");
                 $("#cod_patrimonial").val("");
                 $("#descripcion").val("");
 
-                var modal_close_create_monitors = $('#modal_close_create_monitors');
-                modal_close_create_monitors.trigger('click');
+                //var modal_close_create_monitors = $('#modal_close_create_monitors');
+                //modal_close_create_monitors.trigger('click');
 
             }
 
@@ -268,31 +314,103 @@
                     data: formData,
                     success: function(response) {
                         // Manejar la respuesta del servidor (opcional)
-                        console.log(response);
+                        //console.log(response);
+
+                        //Al terminar la insercion, limpiar los campos y recargar el select con los monitores
+                        //que aun no poseen una computadora asociada
+                        cargar_monitores_select_modal();
+                        limpiarCamposDeCreacionComputadora(); //ocultar modal de creacion
+
                     },
-                    error: function(xhr) {
-                        // Manejar errores (opcional)
-                        console.error(xhr.responseText);
+                    error: function(xhr, status, error) {
+                        if (xhr.status === 422) {
+                            var errores = xhr.responseJSON.errors;
+                            var listaErrores = $("#lista-errores-computer");
+                            listaErrores.empty(); // Limpiar errores anteriores
+
+                            $.each(errores, function(index, error) {
+                                listaErrores.append("<li>" + error + "</li>");
+                            });
+
+                            $("#alerta-computer").show(); // Mostrar la alerta
+                        }
                     }
                 });
 
-                //data_table.ajax.reload(); //recargar la tabla
-                //hideModal(); //ocultar modal de creacion
+                data_table.ajax.reload(); //recargar la tabla
+
             });
 
-            function hideModal() {
-                // $("input").val("");
-                // $("textarea").html("");
+            function limpiarCamposDeCreacionComputadora() {
 
-                var close_create_modal_computer = $('#close_create_modal_computer');
-                close_create_modal_computer.trigger('click');
-
+                $("#case").val("");
+                $("#procesador").val("");
+                $("#placa").val("");
+                $("#case").val("");
+                $("#grafica").val("");
+                $("#descripcion_computer").val("");
+                $("#ram").val("");
+                $('#select_monitors').val(null).trigger('change');
             }
 
 
 
 
 
+            /**
+             * LO QUE AQUI CARGA ES PRIMERO LA LISTA DE TODOS LOS MONITORES
+             * DESPUES CARGA LA LISTA DE LOS MONITORES SELECCIONADOS, ES UN ARRAY UNIDIMENSIONAL ['0','1','2','3']
+             *FINALMENTE CARGAMOS LA LISTA DE LOS MONITORES EN GENERAL, PERO SOLO LOS QUE ESTAN RELACIONADOS CON LA
+              COMPUTADORA SELECCIONADA, ASI COMO TAMBIEN TRAE LA LISTA DE LOS MONNITORES QUE TIENEN UN computer_id EN NULO
+              ES DECIR LOS MONITORES QUE NO HAN LLEGADO A RELACIONARSE CON UNA COMPUTADORA (LIBRES)
+            */
+
+            //EDITAR BOTON --------------------------------------------------------------------------
+            $('body').on('click', '.editButton', function() {
+
+                var id = $(this).data('id');
+                $("#cod_patrimonial_header").text(id)
+
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ url('admin/computers', '') }}/' + id + '/edit',
+                    success: function(response) {
+
+
+                        var selectMonitors = $('#select_edit_monitors');
+                        selectMonitors.empty(); // Limpia cualquier opción previa
+                        response.free_monitors.forEach(function(monitor) {
+                            selectMonitors.append($('<option>', {
+                                value: monitor.id,
+                                text: monitor.cod_patrimonial + " " +
+                                    monitor.marca + " " +
+                                    monitor.modelo
+                            }));
+                        });
+
+                        //console.log(response.free_monitors);
+                        // Manejar la respuesta del servidor (opcional)
+
+                        //UNA VEZ QUE SE HAYA RECEPCIONADO EL MODELO POR AJAX, SE PROCEDE A LA ACTUALIZACION
+                        $("#procesador_edit").val(response.computer.procesador);
+                        $("#placa_edit").val(response.computer.placa);
+                        $("#case_edit").val(response.computer.case);
+                        $("#grafica_edit").val(response.computer.grafica);
+                        $("#ram_edit").val(response.computer.ram);
+                        $("#descripcion_computer_edit").val(response.computer.descripcion);
+
+                        // Configura el campo select2 múltiple con opciones seleccionadas
+                        selectMonitors.val(response.selectedMonitors).trigger('change');
+
+                        //PENDIENTE ENVIAR LA INFORMACION AL CONTROLADOR PARA HACER LA ACTUALIZACION
+                    },
+                    error: function(xhr) {
+                        // Manejar errores (opcional)
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
         });
+
     </script>
 @stop

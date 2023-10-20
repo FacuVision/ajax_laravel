@@ -1,11 +1,11 @@
 <div class="container mt-5">
     <!-- Modal inicial -->
-    <div class="modal fade" id="modalExterno" tabindex="-1" role="dialog" aria-labelledby="modalExternoLabel"
+    <div class="modal fade" id="edit_modalExterno" tabindex="-1" role="dialog" aria-labelledby="edit_modalExternoLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalExternoLabel">Registrar una computadora</h5>
+                    <h5 class="modal-title" id="edit_modalExternoLabel">Editar computadora <span id="cod_patrimonial_header"> </span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -16,56 +16,54 @@
 
                     {{-- ZONA ALERTS --}}
 
-                    <div class="alert alert-success" role="alert" id="alert_create_computers" style="display: none;">
+                    {{-- <div class="alert alert-success" role="alert" id="alert_create_computers" style="display: none;">
                         La computadora con código patrimonial N° <strong id="cod_patrimonial_alert_computer"></strong> ha sido registrado
                     </div>
 
                     <div class="alert alert-danger" id="alerta-computer" style="display: none;">
                         <ul id="lista-errores-computer"></ul>
-                    </div>
+                    </div>--}}
                     {{-- ZONA ALERTS --}}
 
 
 
                     <!-- Formulario POST en el Modal Externo -->
-                    {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_computer']) !!}
+                    {!! Form::open(['class' => 'form-horizontal', 'id' => 'form_edit_computer']) !!}
 
                     <div class="container-fluid">
 
                         <div class="form-group">
-                            <label for="procesador">Procesador</label>
-                            <input type="text" class="form-control" id="procesador" placeholder="Procesador"
-                                name="procesador">
+                            <label for="procesador_edit">Procesador</label>
+                            <input type="text" class="form-control" id="procesador_edit" placeholder="Procesador"
+                                name="procesador_edit">
                         </div>
                         <div class="form-group">
-                            <label for="placa">Placa</label>
-                            <input type="text" class="form-control" id="placa" placeholder="Placa"
-                                name="placa">
+                            <label for="placa_edit">Placa</label>
+                            <input type="text" class="form-control" id="placa_edit" placeholder="Placa"
+                                name="placa_edit">
                         </div>
                         <div class="form-group">
-                            <label for="case">Case</label>
-                            <input type="text" class="form-control" id="case" placeholder="Case" name="case">
+                            <label for="case_edit">Case</label>
+                            <input type="text" class="form-control" id="case_edit" placeholder="Case" name="case_edit">
                         </div>
                         <div class="form-group">
-                            <label for="grafica">Tarjeta Gráfica</label>
-                            <input type="text" class="form-control" id="grafica" placeholder="Tarjeta Gráfica"
-                                name="grafica">
+                            <label for="grafica_edit">Tarjeta Gráfica</label>
+                            <input type="text" class="form-control" id="grafica_edit" placeholder="Tarjeta Gráfica"
+                                name="grafica_edit">
                         </div>
                         <div class="form-group">
-                            <label for="ram">RAM</label>
-                            <input type="text" class="form-control" id="ram" placeholder="RAM" name="ram">
+                            <label for="ram_edit">RAM</label>
+                            <input type="text" class="form-control" id="ram_edit" placeholder="RAM" name="ram_edit">
                         </div>
                         <div class="form-group">
-                            <label for="descripcion">Descripción</label>
-                            <textarea class="form-control" id="descripcion_computer" rows="3" placeholder="Descripción"
-                                name="descripcion_computer"></textarea>
+                            <label for="descripcion_edit">Descripción</label>
+                            <textarea class="form-control" id="descripcion_computer_edit" rows="3" placeholder="Descripción"
+                                name="descripcion_computer_edit"></textarea>
                         </div>
                         <div class="form-group">
 
                             <label for="opciones">Monitores</label>
-
-
-                            <select name="select_monitors[]" class="form-select" id="select_monitors"
+                            <select name="select_edit_monitors[]" class="form-select" id="select_edit_monitors"
                             data-placeholder="Selecciona uno o mas monitores para la PC" multiple></select>
 
                         </div>
@@ -86,9 +84,8 @@
                 </div>
                 <div class="modal-footer">
 
-                    {!! Form::submit('Crear', ['id' => 'create_computer_button_submit_modal', 'class' => 'btn btn-success']) !!}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                        id="close_create_modal_computer">Cerrar</button>
+                    {!! Form::submit('Editar', ['id' => 'edit_computer_button_submit_modal', 'class' => 'btn btn-success']) !!}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_edit_modal_computer">Cerrar</button>
 
                 </div>
             </div>
@@ -102,16 +99,15 @@
 
 
 
-
     <!-- Modal superior -->
-    <div class="modal fade" id="modalInterno" tabindex="-1" role="dialog" aria-labelledby="modalInternoLabel"
+    <div class="modal fade" id="edit_modalInterno" tabindex="-1" role="dialog" aria-labelledby="edit_modalInternoLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_monitor']) !!}
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalInternoLabel">Registrar un nuevo monitor</h5>
+                    <h5 class="modal-title" id="edit_modalInternoLabel">Registrar un nuevo monitor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

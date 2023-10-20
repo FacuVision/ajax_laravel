@@ -37,7 +37,7 @@ class CategoryController extends Controller
             })
 
             ->addColumn('action', function ($category) {
-                return '<a href="javascript:void(0)" class="btn btn-sm btn-warning editButton" data-id="'.$category->id . '" data-toggle ="modal" data-target="#modal_categories_edit"> Editar </a>'. "&nbsp" .'<a href="javascript:void(0)" class="btn btn-sm btn-danger delButton" data-id="'.$category->id.'">Eliminar</a>';
+                return '<a href="javascript:void(0)" class="btn btn-sm btn-warning editButton" data-id="'.$category->id.'" data-toggle ="modal" data-target="#modal_categories_edit"> Editar </a>'. "&nbsp" .'<a href="javascript:void(0)" class="btn btn-sm btn-danger delButton" data-id="'.$category->id.'">Eliminar</a>';
             })
 
             ->rawColumns(['action'])
