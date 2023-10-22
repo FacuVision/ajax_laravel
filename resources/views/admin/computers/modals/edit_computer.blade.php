@@ -30,6 +30,9 @@
                     <!-- Formulario POST en el Modal Externo -->
                     {!! Form::open(['class' => 'form-horizontal', 'id' => 'form_edit_computer']) !!}
 
+                    {!! Form::hidden('computer_id', null, ['id' => 'computer_id']) !!}
+
+
                     <div class="container-fluid">
 
                         <div class="form-group">
@@ -76,7 +79,7 @@
 
                         <div class="form-group">
                             <label for="opciones">Agregar monitor nuevo</label> &nbsp;
-                            <button class="btn btn-success mt-3" data-toggle="modal" data-target="#modalInterno"
+                            <button class="btn btn-success mt-3" data-toggle="modal" data-target="#modalInterno_crear_monitor_edit"
                                 id="modal_monitors_button">+</button>
                         </div>
                     </div>
@@ -96,14 +99,14 @@
 
 
 
-
-
+{{-- ESTE MODAL ES IDENTICO AL OTRO MODAL DE CREACION DE MONITOR, LA DIFERENCIA ES QUE ESTE SE MUESTRA EN UN NIVEL MAS ALTO,
+    YA QUE EL DE CREACION ESTABA MUCHO MAS ATRAS --}}
 
     <!-- Modal superior -->
-    <div class="modal fade" id="edit_modalInterno" tabindex="-1" role="dialog" aria-labelledby="edit_modalInternoLabel"
+    <div class="modal fade" id="modalInterno_crear_monitor_edit" tabindex="-1" role="dialog" aria-labelledby="modalInterno_crear_monitor_edit"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_monitor']) !!}
+            {!! Form::open(['method' => 'POST', 'class' => 'form-horizontal', 'id' => 'form_create_monitor_edit']) !!}
 
             <div class="modal-content">
                 <div class="modal-header">
@@ -115,35 +118,35 @@
                 <div class="modal-body">
                     <!-- Formulario POST en el Modal Interno -->
 
-                    <div class="alert alert-success" role="alert" id="alert_create_monitors" style="display: none;">
-                        El monitor con código patrimonial N° <strong id="cod_patrimonial_alert"></strong> ha sido registrado
+                    <div class="alert alert-success" role="alert" id="alert_create_monitors_edit" style="display: none;">
+                        El monitor con código patrimonial N° <strong id="cod_patrimonial_alert_edit"></strong> ha sido registrado
                     </div>
 
-                    <div class="alert alert-danger" id="alerta" style="display: none;">
-                        <ul id="lista-errores"></ul>
+                    <div class="alert alert-danger" id="alerta_edit_monitors" style="display: none;">
+                        <ul id="lista-errores-edit"></ul>
                     </div>
 
                     <!-- Campo cod_patrimonial -->
                     <div class="form-group">
                         {!! Form::label('cod_patrimonial', 'Código Patrimonial (*)') !!}
-                        {!! Form::text('cod_patrimonial', null, ['class' => 'form-control', 'placeholder' => 'Ingrese código patrimonial']) !!}
+                        {!! Form::text('cod_patrimonial', null, ['class' => 'form-control', 'placeholder' => 'Ingrese código patrimonial' , "id" => "cod_patrimonial_edit"]) !!}
                     </div>
 
                     <!-- Campo marca -->
                     <div class="form-group">
                         {!! Form::label('marca', 'Marca (*)') !!}
-                        {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Ingrese Marca']) !!}
+                        {!! Form::text('marca', null, ['class' => 'form-control', 'placeholder' => 'Ingrese Marca' , "id" => "marca_edit"]) !!}
                     </div>
 
                     <!-- Campo modelo -->
                     <div class="form-group">
                         {!! Form::label('modelo', 'Modelo (*)') !!}
-                        {!! Form::text('modelo', null, ['class' => 'form-control', 'placeholder' => 'Ingrese modelo']) !!}
+                        {!! Form::text('modelo', null, ['class' => 'form-control', 'placeholder' => 'Ingrese modelo' , "id" => "modelo_edit" ]) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('descripcion', 'Descripción (*)') !!}
-                        {!! Form::textarea('descripcion', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => 'Ingrese Descripción']) !!}
+                        {!! Form::textarea('descripcion', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => 'Ingrese Descripción', "id" => "descripcion_edit"]) !!}
                     </div>
                 </div>
                 <div class="modal-footer">

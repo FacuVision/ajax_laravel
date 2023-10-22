@@ -15,7 +15,6 @@
     @include('admin.partials.css_datatables')
     {{-- ESTILO DE DATATABLE VANILA COMPACTO --}}
     @include('admin.styles.responsive_table')
-
     @include('admin.computers.styles.css_select_multiple_bootstrap')
 
 
@@ -74,16 +73,15 @@
     <script>
         $(document).ready(function() {
 
+            $("#alerta-computer").hide();
+            $("#alert_create_monitors").hide();
+
             //CARGAR LOS MONITORES AL INICIO Y AL PRESIONAR EL BOTON DE CREAR
             cargar_monitores_select_modal();
 
             $("#register_computer").click(function() {
                 cargar_monitores_select_modal();
             })
-
-            //ZONA DE ALERTS (OCULTANDO ALERTS)
-            $("#alert_create_monitors").hide();
-
 
             //CARGAR MONITORES EN EL SELECT MULTIPLE
             $('#select_monitors').select2({
@@ -95,6 +93,7 @@
                 allowClear: true,
             });
 
+            //CARGAR MONITORES EN PARA LA EDICION
             $('#select_edit_monitors').select2({
                 theme: "bootstrap-5",
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
@@ -176,7 +175,7 @@
 
                         });
 
-                        limpiarCamposDeCreacion(); //ocultar modal de creacion
+                        limpiarCamposDeCreacion_create(); //ocultar modal de creacion
                         $("#alerta").hide(); //Ocultar el alert de errores en caso haya uno
 
                     },
@@ -196,20 +195,85 @@
                 });
 
                 //data_table.ajax.reload(); //recargar la tabla
+            });
+
+
+
+            $('#form_create_monitor_edit').on('submit', function(e) {
+                e.preventDefault();
+                let formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('admin.computers.create_monitors') }}', // Reemplaza 'nombre_de_ruta' con la ruta de destino en tu aplicación
+                    data: formData,
+                    success: function(response) {
+                        // Manejar la respuesta del servidor (opcional)
+                        //console.log(response);
+
+                        var selectMonitors = $('#select_edit_monitors');
+                        selectMonitors.empty(); // Limpia cualquier opción previa
+                        response.free_monitors.forEach(function(monitor) {
+
+                            //LLENAMOS EL ALERT CON EL VALOR
+                            $("#cod_patrimonial_alert_edit").text(monitor
+                                .cod_patrimonial)
+
+                            selectMonitors.append($('<option>', {
+                                value: monitor.id,
+                                text: monitor.cod_patrimonial + " " +
+                                    monitor.marca + " " +
+                                    monitor.modelo
+                            }));
+
+                            //DURA 10 SEG Y SE OCULTA LA ALERTA
+                            $("#alert_create_monitors_edit").fadeTo(10000, 500).slideUp(
+                                500,
+                                function() {
+                                    $("#alert_create_monitors_edit").slideUp(500);
+                                });
+                        });
+
+                        limpiarCamposDeCreacion_edit(); //ocultar modal de creacion
+                        $("#alerta_edit_monitors")
+                    .hide(); //Ocultar el alert de errores en caso haya uno
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.status === 422) {
+                            var errores = xhr.responseJSON.errors;
+                            var listaErrores = $("#lista-errores-edit");
+                            listaErrores.empty(); // Limpiar errores anteriores
+
+                            $.each(errores, function(index, error) {
+                                listaErrores.append("<li>" + error + "</li>");
+                            });
+
+                            $("#alerta_edit_monitors").show(); // Mostrar la alerta
+                        }
+                    }
+                });
+
+                //data_table.ajax.reload(); //recargar la tabla
 
 
             });
 
-            function limpiarCamposDeCreacion() {
+            function limpiarCamposDeCreacion_edit() {
+
+                $("#marca_edit").val("");
+                $("#modelo_edit").val("");
+                $("#cod_patrimonial_edit").val("");
+                $("#descripcion_edit").val("");
+            }
+
+            function limpiarCamposDeCreacion_create() {
 
                 $("#marca").val("");
                 $("#modelo").val("");
                 $("#cod_patrimonial").val("");
                 $("#descripcion").val("");
-
-                //var modal_close_create_monitors = $('#modal_close_create_monitors');
-                //modal_close_create_monitors.trigger('click');
-
             }
 
 
@@ -301,7 +365,19 @@
                 $('#form_create_computer').submit();
             });
 
+            $('#edit_computer_button_submit_modal').click(function(e) {
+                $('#form_edit_computer').submit();
+            });
+
+
+
+
+
+
             $('#form_create_computer').on('submit', function(e) {
+
+                $("#alerta-computer").hide();
+
                 e.preventDefault();
                 let formData = $(this).serialize();
 
@@ -323,6 +399,7 @@
                     },
                     error: function(xhr, status, error) {
                         if (xhr.status === 422) {
+
                             var errores = xhr.responseJSON.errors;
                             var listaErrores = $("#lista-errores-computer");
                             listaErrores.empty(); // Limpiar errores anteriores
@@ -349,6 +426,11 @@
                 $("#descripcion_computer").val("");
                 $("#ram").val("");
                 $('#select_monitors').val(null).trigger('change');
+
+                // Selecciona el botón por su id
+                var close_create_modal_computer = $('#close_create_modal_computer');
+                // Programáticamente dispara un evento de clic en el botón
+                close_create_modal_computer.trigger('click');
             }
 
 
@@ -390,6 +472,8 @@
                         // Manejar la respuesta del servidor (opcional)
 
                         //UNA VEZ QUE SE HAYA RECEPCIONADO EL MODELO POR AJAX, SE PROCEDE A LA ACTUALIZACION
+
+                        $("#computer_id").val(id);
                         $("#procesador_edit").val(response.computer.procesador);
                         $("#placa_edit").val(response.computer.placa);
                         $("#case_edit").val(response.computer.case);
@@ -408,7 +492,53 @@
                     }
                 });
             });
-        });
 
+            //AJAX PARA ENVIAR TODO AL SERVIDOR Y HACER LA EDICION
+
+
+                $('#form_edit_computer').on('submit', function(e) {
+
+                e.preventDefault();
+                let formData = $(this).serialize();
+
+                let id = $("#computer_id").val();
+
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '{{ url('admin/computers', '') }}/' + id,
+                    data: formData,
+                    success: function(response) {
+                        // Manejar la respuesta del servidor (opcional)
+                        console.log(response);
+                        data_table.ajax.reload(); //recargar la tabla
+                    },
+                    error: function(xhr) {
+                        // Manejar errores (opcional)
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                hideModalEdit(); //ocultar modal de edicion
+            });
+
+            function hideModalEdit() {
+
+                    // Selecciona el botón por su id
+                    var close_edit_modal_computer = $('#close_edit_modal_computer');
+                    // Programáticamente dispara un evento de clic en el botón
+                    close_edit_modal_computer.trigger('click');
+
+            }
+
+
+
+
+
+
+
+
+
+        });
     </script>
 @stop

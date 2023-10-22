@@ -196,9 +196,66 @@ class ComputerController extends Controller
      * @param  \App\Models\Computer  $computer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Computer $computer)
+    public function update(Request $request, $id)
     {
-        //
+        //return $request->all();
+
+        $validator = Validator::make($request->all(), [
+            "procesador_edit" => "required",
+            "placa_edit" => "required",
+            "case_edit" => "required",
+            "grafica_edit" => "required",
+            "ram_edit" => "required",
+            "descripcion_computer_edit" => "required"
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+
+        //OBTENERMOS DE UN ARRAY  "select_monitors[]"
+        $selectMonitors = $request->input('select_edit_monitors');
+
+        // //return $selectMonitors;
+
+        $computer = Computer::find($id);
+
+        $computer->update([
+
+            "procesador" => $request->input('procesador_edit'),
+            "placa" => $request->input('placa_edit'),
+            "case" => $request->input('case_edit'),
+            "grafica" => $request->input('grafica_edit'),
+            "ram" => $request->input('ram_edit'),
+            "descripcion" => $request->input('descripcion_computer_edit')
+        ]);
+
+
+        //SI SE DEJÓ EL CAMPO DE MONITORES VACIO, SE SOBREENTIENDE QUE SE QUIERE DESVINCULAR
+        if ($selectMonitors == null) {
+            //Llenamos la lista de los monitores con la lista de id de los monitores asociados actualmente a la computadora
+            //la cual está a punto de quedarse sin monitores al dejar el select vacio.
+            $selectMonitors = $computer->monitors->pluck("id");
+            Monitor::whereIn('id', $selectMonitors)->update(['computer_id' => null]);
+
+        } else{
+            //POR OTRO LADO AQUI SE ENTIENDE QUE SI SE HAN LLENADO
+
+            //obtenemos la lista de las id_pc asociadas con los monitores, este devuelve un array
+            //la cantidad de elementos del array corresponde a la cantidad de monitores asociados
+
+            $listaComputadorasActuales = $computer->monitors->pluck("computer_id");
+            //despues de ello con ese array es la cantidad de nulos que se van a asignar
+            //esto funciona similar a un sync(), solo que no existe para uno a muchos (relacion)
+            Monitor::whereIn('computer_id', $listaComputadorasActuales)->update(['computer_id' => null]);
+
+            //finalmente se asigna con la lista que llegó por formulario y esté será la nueva asignacion
+            Monitor::whereIn('id', $selectMonitors)->update(['computer_id' => $computer->id]);
+
+        }
+
     }
 
     /**
